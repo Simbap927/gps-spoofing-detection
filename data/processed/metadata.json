@@ -21,6 +21,7 @@
     "Throttle (%)",
     "GPS HDOP",
     "GPS VDOP",
+    "GPS Course",
     "Satellite Locks",
     "Satellite Count",
     "Longitudinal Position (m)",
@@ -38,7 +39,7 @@
     "EKF Detector",
     "GPS_distance"
   ],
-  "n_features": 37,
+  "n_features": 38,
   "window_size": 10,
   "train_samples": 4860,
   "val_samples": 1389,

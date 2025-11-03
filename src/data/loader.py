@@ -56,24 +56,21 @@ def create_dataloaders(X_train, y_train, X_val, y_val, X_test, y_test,
         train_dataset,
         batch_size=batch_size,
         shuffle=shuffle_train,
-        num_workers=num_workers,
-        pin_memory=True
+        num_workers=num_workers
     )
 
     val_loader = DataLoader(
         val_dataset,
         batch_size=batch_size,
         shuffle=False,
-        num_workers=num_workers,
-        pin_memory=True
+        num_workers=num_workers
     )
 
     test_loader = DataLoader(
         test_dataset,
         batch_size=batch_size,
         shuffle=False,
-        num_workers=num_workers,
-        pin_memory=True
+        num_workers=num_workers
     )
 
     print(f"\nDataLoaders created:")

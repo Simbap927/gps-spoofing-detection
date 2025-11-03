@@ -56,16 +56,20 @@ def haversine_distance(lat1, lon1, lat2, lon2):
 
 
 def engineer_features(df):
-    """GPS 좌표 간 거리 특징 생성"""
-    # 이전 시점과의 GPS 거리
-    df['GPS_distance'] = 0.0
-    for i in range(1, len(df)):
-        df.loc[i, 'GPS_distance'] = haversine_distance(
-            df.loc[i-1, 'GPS Latitude'], df.loc[i-1, 'GPS Longitude'],
-            df.loc[i, 'GPS Latitude'], df.loc[i, 'GPS Longitude']
-        )
+    """GPS 좌표 간 거리 특징 생성 (벡터화)"""
+    # 벡터화된 GPS 거리 계산
+    lat1 = df['GPS Latitude'].shift(1).values
+    lon1 = df['GPS Longitude'].shift(1).values
+    lat2 = df['GPS Latitude'].values
+    lon2 = df['GPS Longitude'].values
 
-    print(f"  Engineered GPS_distance feature\n")
+    # 첫 번째 행은 NaN이 되므로 0으로 설정
+    lat1[0], lon1[0] = lat2[0], lon2[0]
+
+    df['GPS_distance'] = haversine_distance(lat1, lon1, lat2, lon2)
+    df.loc[0, 'GPS_distance'] = 0.0  # 첫 샘플은 0
+
+    print(f"  Engineered GPS_distance feature (vectorized)\n")
     return df
 
 
@@ -76,15 +80,14 @@ def select_features(df):
     exclude = [
         # GPS 좌표: GPS_distance로 변환해서 사용 (절대 위치보다 변화량이 spoofing 탐지에 유용)
         'GPS Latitude', 'GPS Longitude', 'GPS MGRS',
-        'GPS Course',  # Heading/Yaw 정보와 중복
         # 시간 정보: 시계열 순서는 윈도우 구조로 표현됨
         'Run Time', 'Clock Time', 'Clock Date', 'Hobbs',
         'Data Type'  # 타겟 변수
     ]
 
     # 수치형 특징만 선택
-    # 포함되는 특징: 자세(Roll, Pitch, Yaw), 운동(Velocity, Steering Angle),
-    #               GPS 품질(HDOP, VDOP, Satellite Count), 센서(Vibration, Temperature),
+    # 포함되는 특징: 자세(Roll, Pitch, Yaw, Heading), 운동(Velocity, Steering Angle),
+    #               GPS(Course, HDOP, VDOP, Satellite Count), 센서(Vibration, Temperature),
     #               파생 특징(GPS_distance)
     features = [col for col in df.columns
                 if col not in exclude and df[col].dtype in [np.float64, np.int64, np.float32, np.int32]]
