@@ -27,3 +27,10 @@ https://github.com/mehrab-abrar/AV-GPS-Dataset/
     │   └── loader.py
     └── models/ # (TODO)
 ```
+
+# Quick Start
+```bash
+pip install -r requirements.txt
+python src/data/preprocessing.py
+python src/data/loader.py
+```
