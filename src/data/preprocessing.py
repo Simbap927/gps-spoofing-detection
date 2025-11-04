@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 import pickle
 import json
@@ -143,7 +143,7 @@ def split_dataset(X, y):
 
 # ===== 7. 정규화 =====
 def normalize_features(X_train, X_val, X_test):
-    """StandardScaler로 정규화"""
+    """MinMaxScaler로 0~1 범위 정규화"""
     n_samples, n_timesteps, n_features = X_train.shape
 
     # Reshape to [n_samples * n_timesteps, n_features]
@@ -151,13 +151,13 @@ def normalize_features(X_train, X_val, X_test):
     X_val_flat = X_val.reshape(-1, n_features)
     X_test_flat = X_test.reshape(-1, n_features)
 
-    # Fit on train, transform all
-    scaler = StandardScaler()
+    # Fit on train, transform all (0~1 범위)
+    scaler = MinMaxScaler()
     X_train_norm = scaler.fit_transform(X_train_flat).reshape(n_samples, n_timesteps, n_features)
     X_val_norm = scaler.transform(X_val_flat).reshape(len(X_val), n_timesteps, n_features)
     X_test_norm = scaler.transform(X_test_flat).reshape(len(X_test), n_timesteps, n_features)
 
-    print(f"  Normalized with StandardScaler\n")
+    print(f"  Normalized to [0, 1] with MinMaxScaler\n")
     return X_train_norm, X_val_norm, X_test_norm, scaler
 
 
