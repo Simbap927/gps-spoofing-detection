@@ -31,8 +31,8 @@ wheels/
 # Data
 data/raw/*.csv
 data/raw/*.zip
-data/processed/*.npy
-data/processed/*.pkl
+# data/processed/*.npy
+# data/processed/*.pkl
 
 # Experiment
 *.pt
